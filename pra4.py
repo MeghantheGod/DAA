@@ -1,32 +1,21 @@
-class Item:
-    def __init__(self, profit, weight):
-        self.profit = profit
-        self.weight = weight
+def knapsack_01(values, weights, capacity):
+    n = len(values)
+    dp = [0] * (capacity + 1)
 
-def fractionalknap(w, arr):
-    # Sort items by profit-to-weight ratio in descending order
-    arr.sort(key=lambda x: x.profit / x.weight, reverse=True)
-    final_value = 0
-    
-    for item in arr:
-        # If item can be picked whole
-        if w >= item.weight:
-            final_value += item.profit
-            w -= item.weight
-        else:
-            # Take the fraction of the item that fits
-            final_value += item.profit * (w / item.weight)
-            break
-    return final_value
-
-if __name__ == '__main__':
-    n = int(input("Enter the total number of items:\n"))
-    arr = []
     for i in range(n):
-        profit = int(input(f"Enter the profit of item {i+1}:\n"))
-        weight = int(input(f"Enter the weight of item {i+1}:\n"))
-        arr.append(Item(profit, weight))
-    
-    w = int(input("Enter the maximum weight of the knapsack:\n"))
-    print("Maximum profit from the items:", fractionalknap(w, arr))
+        for w in range(capacity, weights[i] - 1, -1):
+            dp[w] = max(dp[w], dp[w - weights[i]] + values[i])
 
+    return dp[capacity]
+
+# User input
+n = int(input("Enter the number of items: "))
+values = input("Enter the value of the item{} in order:".format(n)).split()
+values = [int(v) for v in values]
+weights = input("Enter the weight of the item{} in order:".format(n)).split()
+weights = [int(w) for w in weights]
+capacity = int(input("Enter the capacity of knapsack:"))
+
+# Maximum value calculation
+max_value = knapsack_01(values, weights, capacity)
+print("The maximum value that can be carried in the knapsack:", max_value)
